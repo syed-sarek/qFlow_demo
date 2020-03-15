@@ -1,0 +1,35 @@
+CREATE USER sarek
+  IDENTIFIED BY Drl1234#
+  DEFAULT TABLESPACE users
+  TEMPORARY TABLESPACE temp;
+
+-----------
+GRANT create session,
+      create table,
+      create view,
+      create procedure,
+      create trigger
+   TO sarek;
+
+-----------
+GRANT UNLIMITED TABLESPACE TO sarek
+
+GRANT DBA TO sarek
+-----------
+
+Data Import Command:
+imp userid=sarek/Drl1234# FULL=y FILE="D:\Project\swifter_db.dmp"
+---------
+
+grant select, insert, update, delete on export_garments to sarek;
+-----------
+
+copy ojdbc6 to "C:\Program Files\Java\jdk1.8.0_172\jre\lib\ext"
+
+------------
+
+select * from dba_users;
+
+select profile from DBA_USERS where username = 'SAREK';
+
+alter profile DEFAULT limit password_life_time UNLIMITED;

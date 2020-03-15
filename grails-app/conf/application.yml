@@ -1,0 +1,183 @@
+---
+grails:
+    profile: web
+    codegen:
+        defaultPackage: drl2
+    spring:
+        transactionManagement:
+            proxies: false
+info:
+    app:
+        name: '@info.app.name@'
+        version: '@info.app.version@'
+        grailsVersion: '@info.app.grailsVersion@'
+spring:
+    groovy:
+        template:
+            check-template-location: false
+# Spring Actuator Endpoints are Disabled by Default
+endpoints:
+    enabled: false
+    jmx:
+        enabled: true
+
+---
+grails:
+    mime:
+        disable:
+            accept:
+                header:
+                    userAgents:
+                        - Gecko
+                        - WebKit
+                        - Presto
+                        - Trident
+        types:
+            all: '*/*'
+            atom: application/atom+xml
+            css: text/css
+            csv: text/csv
+            form: application/x-www-form-urlencoded
+            html:
+              - text/html
+              - application/xhtml+xml
+            js: text/javascript
+            json:
+              - application/json
+              - text/json
+            multipartForm: multipart/form-data
+            pdf: application/pdf
+            rss: application/rss+xml
+            text: text/plain
+            hal:
+              - application/hal+json
+              - application/hal+xml
+            xml:
+              - text/xml
+              - application/xml
+    urlmapping:
+        cache:
+            maxsize: 1000
+    controllers:
+        defaultScope: singleton
+        upload:
+                maxFileSize: 7000000
+                maxRequestSize: 7000000
+    converters:
+        encoding: UTF-8
+    views:
+        default:
+            codec: html
+        gsp:
+            encoding: UTF-8
+            htmlcodec: xml
+            codecs:
+                expression: html
+                scriptlets: html
+                taglib: none
+                staticparts: none
+endpoints:
+    jmx:
+        unique-names: true
+
+---
+hibernate:
+    jdbc:
+        use_get_generated_keys: true
+
+elasticSearch:
+        client.mode: 'local'
+        datastoreImpl: 'hibernateDatastore'
+        transport.sniff: true
+        bulkIndexOnStartup: true
+        AdminService: true
+
+dataSource:
+    pooled: true
+    jmxExport: true
+    driverClassName: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@localhost:1521:drl
+    username: sarek
+    password: Drl1234#
+
+environments:
+    development:
+        dataSource:
+            dbCreate: update
+            url: jdbc:oracle:thin:@localhost:1521:drl
+    test:
+        dataSource:
+            dbCreate: update
+            url: jdbc:oracle:thin:@localhost:1521:drl
+    production:
+        dataSource:
+            dbCreate: none
+            url: jdbc:oracle:thin:@localhost:1521:drl
+            properties:
+                jmxEnabled: true
+                initialSize: 5
+                maxActive: 50
+                minIdle: 5
+                maxIdle: 25
+                maxWait: 10000
+                maxAge: 600000
+                timeBetweenEvictionRunsMillis: 5000
+                minEvictableIdleTimeMillis: 60000
+                validationQuery: SELECT 1
+                validationQueryTimeout: 3
+                validationInterval: 15000
+                testOnBorrow: true
+                testWhileIdle: true
+                testOnReturn: false
+                jdbcInterceptors: ConnectionState
+                defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED
+---
+grails:
+    databinding:
+        dateFormats:
+              "dd-mmm-yy"
+---
+server:
+    port: 9000                                          # The port to listen on
+    session:
+        timeout: 28800                                  # 8 hours
+#    ssl:
+#        enabled: true                             # Activate HTTPS mode on the server port
+#        key-store: /Grails Applications/Small ERP/drl2/SSL/swifter.keystore          # e.g. /etc/tomcat7/keystore/tomcat.keystore
+#        key-store-password: Drl1234#              # e.g. changeit
+#        key-alias: sarek
+#        key-password: Drl1234#
+
+---
+grails:
+    plugin:
+        springsecurity:
+            userLookup:
+                userDomainClassName: auth.User
+                authorityJoinClassName: auth.UserRole
+            authority:
+                className: auth.Role
+            controllerAnnotations:
+                staticRules:
+                    - pattern: '/actuatordashboard/**'
+                      access: ['hasRole("ROLE_ADMIN")']
+                    - pattern: '/actuator/**'
+                      access: ['hasRole("ROLE_ADMIN")']
+---
+grails:
+    plugin:
+        actuator:
+            gravatar:
+                disabled: true
+---
+grails:
+     mail:
+          host: "smtp.gmail.com"                                               # "smtp.live.com"
+          port: 465                                                            # 587
+          username: "swifter.erp@gmail.com"                                       # mail@live.com
+          password: "Drl1234#"                                                 # password
+          props:
+              mail.smtp.auth: "true"                                           # mail.smtp.starttls.enable: "true"
+              mail.smtp.socketFactory.port: "465"                              # mail.smtp.port: "587"
+              mail.smtp.socketFactory.class: "javax.net.ssl.SSLSocketFactory"
+              mail.smtp.socketFactory.fallback: "false"
